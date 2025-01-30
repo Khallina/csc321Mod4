@@ -115,15 +115,13 @@ def task_1a():
 
 
 def task_1b():
-    """
-    FUNCTION task_1b():
-    1. Print "Task 1b: Strings with Hamming distance of 1"
-    2. FOR i from 1 to 3:
-         Find two strings s1, s2 with Hamming distance 1
-         Calculate SHA256 hashes h1, h2 of s1, s2
-         Print s1, s2, h1, h2
-    END FUNCTION
-    """
+    # FUNCTION task_1b():
+    # 1. Print "Task 1b: Strings with Hamming distance of 1"
+    # 2. FOR i from 1 to 3:
+    #      Find two strings s1, s2 with Hamming distance 1
+    #      Calculate SHA256 hashes h1, h2 of s1, s2
+    #      Print s1, s2, h1, h2
+
     print("Task 1b: Strings with Hamming distance of 1")
     for i in range(3):
         s1, s2 = find_hamming_distance_1()
@@ -134,24 +132,22 @@ def task_1b():
 
 
 def task_1c():
-    """
-    FUNCTION task_1c():
-    1. Print "Task 1c: Finding collisions for truncated hashes"
-    2. Initialize empty lists for bits, time, and inputs
-    3. FOR bits from 8 to 50, step 2:
-         Find collision for 'bits' number of bits
-         IF collision found:
-             Add result to table
-             Append bits, time, and inputs to respective lists
-         ELSE:
-             Print timeout message
-    4. Print results table
-    5. Plot graphs:
-         1. Digest Size vs Collision Time
-         2. Digest Size vs Number of Inputs
-    6. Save graphs as 'collision_analysis.png'
-    END FUNCTION
-    """
+    # FUNCTION task_1c():
+    # 1. Print "Task 1c: Finding collisions for truncated hashes"
+    # 2. Initialize empty lists for bits, time, and inputs
+    # 3. FOR bits from 8 to 50, step 2:
+    #      Find collision for 'bits' number of bits
+    #      IF collision found:
+    #          Add result to table
+    #          Append bits, time, and inputs to respective lists
+    #      ELSE:
+    #          Print timeout message
+    # 4. Print results table
+    # 5. Plot graphs:
+    #      1. Digest Size vs Collision Time
+    #      2. Digest Size vs Number of Inputs
+    # 6. Save graphs as 'collision_analysis.png'
+
     print("Task 1c: Finding collisions for truncated hashes")
     bits_list = []
     time_list = []
@@ -186,8 +182,6 @@ def task_1c():
     plt.savefig('collision_analysis.png')
     plt.show()
 
-
-# Main function to run all tasks
 def task_1_main():
     """
     FUNCTION task_1_main():
@@ -201,5 +195,4 @@ def task_1_main():
     task_1c()
 
 
-# Run the program
 task_1_main()
