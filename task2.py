@@ -79,5 +79,5 @@ def process_shadow_file(shadow_file_path, target_user):
 # Main function
 if __name__ == "__main__":
     shadow_file_path = "shadow.txt"  # Replace with the path to your shadow file
-    target_user = "Bilbo"  # Hardcoded username (change this as needed)
+    target_user = "Thorin"  # Hardcoded username (change this as needed)
     process_shadow_file(shadow_file_path, target_user)
