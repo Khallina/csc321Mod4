@@ -3,26 +3,33 @@ import nltk
 from nltk.corpus import words
 import time
 
+
+# Notes: $2b$12$somesaltvaluehashedpasswordvalue
+# $2b$ is the algorithm.
+# 12 is the work factor (cost factor).
+# somesaltvalue is the salt.
+# hashedpasswordvalue is the actual hash.
+
+
 # Comment out after the first run to avoid unnecessary downloads
 # nltk.download('words')
-
-# Function to crack bcrypt hash
-def crack_bcrypt_hash(user, algorithm, workfactor, salt_hash, wordlist):
+def crack_bcrypt_hash(algorithm, workfactor, salt_hash, wordlist):
     # Reconstruct the full bcrypt salt (including algorithm, workfactor, and salt)
     full_salt = f"${algorithm}${workfactor}${salt_hash[:22]}".encode('utf-8')
 
     # Extract the target hash (the part after the salt)
     target_hash = salt_hash[22:].encode('utf-8')
 
-    # Iterate through the wordlist
-    for i, word in enumerate(wordlist):
-        # Provide periodic updates
+    i = 0
+    for word in wordlist:
+        # When it runs for so long without updates I feel like it crashed, this helps
         if i % 1000 == 0:  # Print progress every 1000 words
             print(f"Testing word {i + 1}/{len(wordlist)}: {word}")
+        i += 1
 
-        # Hash the word using bcrypt
+        # bcrypt time
         try:
-            # Generate the bcrypt hash for the current word
+            # make hash
             hashed_word = bcrypt.hashpw(word.encode('utf-8'), full_salt)
             # Compare the generated hash with the target hash
             if hashed_word == full_salt + target_hash:
@@ -32,40 +39,36 @@ def crack_bcrypt_hash(user, algorithm, workfactor, salt_hash, wordlist):
             continue
     return None
 
-# Function to process the shadow file for a specific user
-def process_shadow_file(shadow_file_path, target_user):
-    # Load the NLTK word corpus (6-10 letters)
-    wordlist = [word for word in words.words() if 6 <= len(word) <= 10]
 
-    # Read the shadow file
+# Process it - sort out names, call cracking function)
+def process_shadow_file(shadow_file_path, target_user):
+    # Load the NLTK (6-10 letters only for this)
+    wordlist = [word for word in words.words() if 6 <= len(word) <= 10]
     with open(shadow_file_path, 'r') as file:
         lines = file.readlines()
 
-    # Process each user
+    # List each username so I can crack just what I want to
     for line in lines:
         line = line.strip()
         if not line:
             continue
 
-        # Extract components
+        # Make it to only read the line for the targeted name
         parts = line.split(':')
         user = parts[0]
         if user != target_user:
             continue  # Skip other users
 
-        algorithm = parts[1].split('$')[1]
-        workfactor = parts[1].split('$')[2]
-        salt_hash = parts[1].split('$')[3]
+        algorithm = parts[1].split('$')[1] # "2b" from notes
+        workfactor = parts[1].split('$')[2] # "12" from notes
+        salt_hash = parts[1].split('$')[3] # "somesaltvaluehashedpasswordvalue" from  notes (see top of file)
 
         print(f"Cracking password for user: {user}")
 
-        # Start timer
         start_time = time.time()
-
         # Crack the hash
-        password = crack_bcrypt_hash(user, algorithm, workfactor, salt_hash, wordlist)
+        password = crack_bcrypt_hash(algorithm, workfactor, salt_hash, wordlist)
 
-        # End timer
         end_time = time.time()
 
         if password:
@@ -74,10 +77,11 @@ def process_shadow_file(shadow_file_path, target_user):
             print(f"Password for {user} not found.")
 
         print(f"Time taken: {end_time - start_time:.2f} seconds\n")
-        break  # Stop after processing the target user
+        break  # Code cracked stop
+
 
 # Main function
 if __name__ == "__main__":
-    shadow_file_path = "shadow.txt"  # Replace with the path to your shadow file
-    target_user = "Thorin"  # Hardcoded username (change this as needed)
-    process_shadow_file(shadow_file_path, target_user)
+    target_user = "Thorin"  # So we didn't have to run all of them at once, made it to purposefully check
+    # a specfic name at a time from the txt file
+    process_shadow_file("shadow.txt", target_user)
